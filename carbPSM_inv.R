@@ -113,11 +113,16 @@ model{
   S_z_mol <- k ^ 2 * R_PCQ_S_0 / DIFC * (1 - exp(-z / k)) # (mol/cm3)
   S_z <- S_z_mol * (0.08206 * Tsoil_K * 10^9) # ppmv
   
+  ## estimate the d13Cr of soil-respired CO2
+  d13Ca <- -6.5 # assumed a fixed value
+  # DD13_water <- 25.09 - 1.2 * (MAP + 975) / (27.2 + 0.04 * (MAP + 975))
+  # D13C_plant <- (28.26 * 0.22 * (pCO2 + 23.9)) / (28.26 + 0.22 * (pCO2 + 23.9)) - DD13_water # schubert & Jahren (2015)
+  # d13Cr <- d13Ca - D13C_plant
   # fractionation of soil organic matter - PBUQ (Breecker, 2013)
   d13Co <- d13Cr + 1 + SOM.frac
   
   ### d13C of pedogenic carbonate
-  d13Cs <- (pCO2 * (-6.5) + S_z * (1.0044 * d13Cr + 4.4))/(S_z + pCO2) # assumed a uniform d13Ca of -6.5‰
+  d13Cs <- (pCO2 * (-6.5) + S_z * (1.0044 * d13Cr + 4.4))/(S_z + pCO2)
   # T-dependent fractionation equation - Romanek et al., 1992
   d13Cc <- ((1 + (11.98 - 0.12 * Tsoil) / 1000) * (d13Cs + 1000)) - 1000
   
@@ -189,7 +194,7 @@ model{
   e_a <- 0.6108 * exp(17.27 * Tdew / (Tdew + 237.3)) * 10^3 # actual water vapor pressure (kPa)
   Tair_PCQ <- MAT + TmPCQ_min_a * sin(2 * 3.1415 * t)
   e_s <- 0.6112 * exp(17.67 * Tair_PCQ / (Tair_PCQ + 243.5)) * 10^3 # saturated water vapor pressure (kPa)
-  h <- e_a / e_s
+  h <- e_a / e_s # air humidity
   
   # evaporation from isolated bodies of water
   R18v_ini <- R18p / alpha18_v_l_eq
