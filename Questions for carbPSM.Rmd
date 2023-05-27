@@ -1,0 +1,17 @@
+---
+title: "Questions for PSM"
+author: "Jiawei"
+date: "2023-05-26"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## The codes
+
+1. How to decide what kind of distribution you want to use (e.g. normal, beta, gamma)?  
+2. What's the difference between `jags()` and `jags.parallel()`?
+
+

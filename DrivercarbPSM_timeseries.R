@@ -1,15 +1,24 @@
-# setwd("/Users/jiawei/Desktop/R_code/PSM/PSM for soil carbonates/")
+setwd("/Users/jiawei/Documents/GitHub/JPI-for-soil-carbonate/data/")
 
 library(tidyverse)
 library(R2jags)
 
-# These are the observed data
+# Read in proxy time series data
 set.seed(42)
-measurements <- read.csv("Dp17O_CO2.csv")
-d13Cc <- measurements$d13Cc
-d18Oc <- measurements$d18Oc
-d13Co <- measurements$d13Co
-Dp17Oc <- measurements$Dp17O
+prox.in <- read.csv("Jiaxian.csv")
+prox.in <- prox.in[, c(1:9)]
+names(prox.in) <- c("age", "d13Cc", "d13Ccsd", "d18Oc", "d18Ocsd", "d13Co", "d13Cosd", "dp17Oc", "dp17Ocsd")
+prox.in$age <- prox.in$age / 1000 # ka to Ma
+
+# d13Cc <- measurements$d13Cc
+# d18Oc <- measurements$d18Oc
+# d13Co <- measurements$d13Co
+# Dp17Oc <- measurements$Dp17O
+
+# read in the d13C of atmospheric CO2 from Tipple et al. (2010)
+d13Ca <- read.csv("tipple_et_al_2010.csv") # age in Ma
+d13Ca_interp <- approx(d13Ca$age, d13Ca$d13Ca, xout = prox.in$age, method = "linear")
+prox.in$d13Ca <- d13Ca_interp$y
 
 # These are the parameters you want recorded in the output
 params <- c("pCO2", "h", "MAP", "S_z", "PfPCQ", "MAT", "f_soil", "z", "L", "f_R", "R_PCQ_D", "PET_A_A")
