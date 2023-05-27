@@ -15,3 +15,9 @@ knitr::opts_chunk$set(echo = TRUE)
 2. What's the difference between `jags()` and `jags.parallel()`?
 
 
+## The PSM model
+
+1. How to connect the fraction of remaining soil water `f_soil` with soil-respired CO2?
+2. Is it possible to connect soil texture parameters with thermal parameters (thermal conductivity and volumetric heat capacity)?
+3. 
+

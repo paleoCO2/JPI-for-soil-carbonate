@@ -20,9 +20,6 @@ model{
   alpha18_diff <- 1.028489
   alpha17_diff <- 1.014672
   theta_v_l_eq <- 0.529
-  # Damping term d for calculating soil temperature 
-  # Assume thermal conductivity = 0.0007 cal / cm2  s  *C, volumetric heat capacity of 0.3 cal / cm2 *C, Quade 2013
-  d <- sqrt((2 * 0.0007) / ((2 * 3.1415 / 3.154e7) * 0.3))
   
   for (i in 1:length(d13Cc.data)) {
     PPCQ[i] <- MAP[i] * PfPCQ[i] # precipitation at pedogenic carbonate quarter
@@ -50,6 +47,9 @@ model{
     ### Soil temperatures at depth z
     # T is highest (avg summer temps) at t = 0.29, mean at t = 0 (avg spring and fall temps), low at t = 0.79 (avg winter temps)
     # t[i] <- 0.29 # assume pedogenic carbonate grew during warmest season
+    # Damping term d for calculating soil temperature 
+    # Assume thermal conductivity = 0.0007 cal / cm2  s  *C, volumetric heat capacity of 0.3 cal / cm2 *C, Quade 2013
+    d <- sqrt((2 * 0.0007) / ((2 * 3.1415 / 3.154e7) * 0.3))
     Tsoil[i] <- MAT[i] + (TmPCQ_min_a[i] * sin(2 * 3.1415 * t[i] - z[i] / d) / exp(z[i] / d)) 
     Tsoil_K[i] <- Tsoil[i] + 273.15
     
@@ -66,8 +66,9 @@ model{
     RH[i] <- h_pre[i] * 100 # prescribed humidity
     
     ### Potential Evapotranspiration - Hargreaves and Samani (1982)
-    # Solar radiation estimate
-    Rs[i] <- Ra[i] * 0.16 * sqrt(12)
+    # Solar radiation estimate (MJ/m2/day)
+    # Ra[i] <- 42.608 - 0.3538 * latitude[i] # total radiation at the top of the atmosphere
+    Rs[i] <- Ra[i] * 0.16 * sqrt(12) # daily temperature range assumed to be 12
     
     # PET (mm/day) - Turc (1961)
     PET_A_D_m[i] <- ifelse (RH[i] < 50, 0.013 * (MAT[i] / (MAT[i] + 15)) * (23.8856 * Rs[i] + 50)* (1 + ((50 - RH[i]) / 70)),
