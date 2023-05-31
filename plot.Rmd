@@ -1,0 +1,61 @@
+---
+title: "plot"
+author: "Jiawei"
+date: "2023-05-31"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+### loading data
+```{r}
+library(tidyverse)
+input <- read.csv("data/Jiaxian.csv") %>% drop_na(age)
+post.mean <- read.csv("data/MCMC_mean.csv")
+post.sd <- read.csv("data/MCMC_sd.csv")
+
+theme <- theme(axis.text.x = element_text(margin = margin(t = 0.1, unit = "cm")),
+               axis.text.y = element_text(margin = margin(r = 0.1, unit = "cm")),
+               axis.ticks.length=unit(0.15, "cm"),
+               axis.ticks = element_line(colour = "black"),
+               text = element_text(size = 8),
+               axis.title = element_text(size = 10), 
+               axis.text = element_text(size = 10),
+               panel.grid.minor = element_blank(),
+               panel.grid.major = element_blank())
+```
+
+### CO2
+```{r}
+post.CO2 <- as.data.frame(cbind(input$age, post.mean$pCO2, post.sd$pCO2))
+names(post.CO2) <- c("age", "CO2", "sd")
+p1 <- ggplot(post.CO2, aes(x = age, y = CO2)) +
+  geom_line() +
+  geom_ribbon(aes(ymin = CO2 - sd, ymax = CO2 + sd), alpha = 0.2) +
+  theme_bw() + theme +
+  ylab(expression(italic(p)*"CO"[2]*" (ppm)"))
+p1
+```
+
+### MAP
+```{r}
+post.MAP <- as.data.frame(cbind(input$age, post.mean$MAP, post.sd$MAP))
+names(post.MAP) <- c("age", "MAP", "sd")
+p2 <- ggplot(post.MAP, aes(x = age, y = MAP)) +
+  geom_line() +
+  geom_ribbon(aes(ymin = MAP - sd, ymax = MAP + sd), alpha = 0.2) +
+  theme_bw() + theme +
+  ylab("MAP (mm)")
+p2
+```
+
+### MAT
+```{r}
+post.MAT <- as.data.frame(cbind(input$age, post.mean$MAT, post.sd$MAT))
+names(post.MAT) <- c("age", "MAT", "sd")
+p3 <- ggplot(post.MAT, aes(x = age, y = MAT)) +
+  geom_line() +
+  geom_ribbon(aes(ymin = MAT - sd, ymax = MAT + sd), alpha = 0.2) +
+  theme_bw() + theme +
+  ylab("MAT")
+p3
+```

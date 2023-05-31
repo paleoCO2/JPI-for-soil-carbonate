@@ -3,10 +3,6 @@ setwd("/Users/jiawei/Documents/GitHub/JPI-for-soil-carbonate/")
 library(tidyverse)
 library(R2jags)
 
-############################################################################################
-#    INPUT TO PASS TO JAGS
-############################################################################################  
-
 ### Read in proxy time series data
 set.seed(42)
 prox.in <- read.csv("data/Jiaxian.csv")
@@ -20,11 +16,6 @@ prox.in$age <- prox.in$age / 1000 # ka to Ma
 d13Ca <- read.csv("data/tipple_et_al_2010.csv") # age in Ma
 d13Ca_interp <- approx(d13Ca$age, d13Ca$d13Ca, xout = prox.in$age, method = "linear")
 prox.in$d13Ca <- d13Ca_interp$y
-
-### other inputs
-# Damping term d for calculating soil temperature at depth
-# Assume thermal conductivity = 0.0007 cal / cm2  s  *C, volumetric heat capacity of 0.3 cal / cm2 *C, Quade 2013
-d <- sqrt((2 * 0.0007) / ((2 * 3.1415 / 3.154e7) * 0.3))
 
 # These are the parameters you want to record in the output
 params <- c("pCO2", "h", "MAP", "S_z", "PfPCQ", "MAT", "f_soil", "z", "L", "f_R", "R_PCQ_D", "PET_A_A")

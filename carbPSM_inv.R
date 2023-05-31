@@ -28,18 +28,18 @@ model{
     ### Depth to carbonate formation
     # top of Bk equation based on Retallack (2005) data 
     # consider incorporate the uncertainty of the coefficients?
-    # z_min[i] <- MAP[i] * 0.0925 + 13.4
-    # # thickness of Bk, CMP as proxy for seasonality
-    # z_thick[i] <- abs(PPCQ[i] - MAP[i] / 4) * 0.74 + 17.4
-    # # find middle of Bk in cm
-    # z_mean[i] <- z_min[i] + z_thick[i] / 2
-    # #gamma scale parameter, using 22cm as variance from Retallack fit
-    # z_theta[i] <- 22 ^ 2 / z_mean[i]
-    # #gamma shape parameter
-    # z_shp[i] <- z_mean[i] / z_theta[i]
-    # z[i] ~ dgamma(z_shp[i], z_theta[i])
+    z_min[i] <- MAP[i] * 0.0925 + 13.4
+    # thickness of Bk, CMP as proxy for seasonality
+    z_thick[i] <- abs(PPCQ[i] - MAP[i] / 4) * 0.74 + 17.4
+    # find middle of Bk in cm
+    z_mean[i] <- z_min[i] + z_thick[i] / 2
+    #gamma scale parameter, using 22cm as variance from Retallack fit
+    z_theta[i] <- 22 ^ 2 / z_mean[i]
+    #gamma shape parameter
+    z_shp[i] <- z_mean[i] / z_theta[i]
+    z[i] ~ dgamma(z_shp[i], z_theta[i])
     
-    z[i] <- 20 # for fixed value
+    # z[i] <- 20 # for fixed value
     
     # depth in meters
     z_m[i] <- z[i] / 100
@@ -49,8 +49,8 @@ model{
     # t[i] <- 0.29 # assume pedogenic carbonate grew during warmest season
     # Damping term d for calculating soil temperature 
     # Assume thermal conductivity = 0.0007 cal / cm2  s  *C, volumetric heat capacity of 0.3 cal / cm2 *C, Quade 2013
-    d <- sqrt((2 * 0.0007) / ((2 * 3.1415 / 3.154e7) * 0.3))
-    Tsoil[i] <- MAT[i] + (TmPCQ_min_a[i] * sin(2 * 3.1415 * t[i] - z[i] / d) / exp(z[i] / d)) 
+    d[i] <- sqrt((2 * 0.0007) / ((2 * 3.1415 / 3.154e7) * 0.3))
+    Tsoil[i] <- MAT[i] + (TmPCQ_min_a[i] * sin(2 * 3.1415 * t[i] - z[i] / d[i]) / exp(z[i] / d[i])) 
     Tsoil_K[i] <- Tsoil[i] + 273.15
     
     ### Relative humidity
